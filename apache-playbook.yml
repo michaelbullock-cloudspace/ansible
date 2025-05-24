@@ -1,0 +1,25 @@
+# PLAY
+- name: Install Apache Webserver on Amazon Hosts
+  hosts: amz-clients
+
+  tasks: 
+    - name: Updates all packages # yum update -y
+      ansible.builtin.yum:  # <------ MODULE
+        name: "*"
+        state: latest
+    - name: Install the latest version of Apache
+      ansible.builtin.dnf:  # <------ MODULE
+        name: httpd
+        state: installed    # <------ state string that specifies the package as installed state
+    - name: Start service httpd, if not started  # systemctl start httpd
+      ansible.builtin.service:
+        name: httpd
+        state: started
+    - name: Enable service httpd at boot time   # systemctl enable httpd
+      ansible.builtin.service:
+        name: httpd
+        state: true
+    - name: Copy HTML File   # systemctl enable httpd
+      ansible.builtin.copy:
+        src: index.html      # from the Ansible controller
+        dest: /var/www/html  # to this folder on the client
